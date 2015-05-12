@@ -24,21 +24,22 @@ public class Employee extends Thread {
     @Override
     public void run() {
         super.run();
-        while (true) {
+        Task task = tryGetTask();
+        solveTask(task);
+    }
+
+    private synchronized Task tryGetTask() {
+        Task task = null;
+        while (task == null) {
             try {
                 sleep(getSleepTime());
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            Task task = tryGetTask();
-            solveTask(task);
+            if (Utils.taskList.size() != 0)
+                task = Utils.taskList.remove(0);
         }
-    }
-
-    private synchronized Task tryGetTask() {
-        if (Utils.taskList.size() != 0)
-            return Utils.taskList.remove(0);
-        return null;
+        return task;
     }
 
     private void solveTask(Task task) {
@@ -78,5 +79,14 @@ public class Employee extends Thread {
     private long getSleepTime() {
         long bound = Utils.GET_TASK_MAX_INTERVAL - Utils.GET_TASK_MIN_INTERVAL;
         return Utils.GET_TASK_MIN_INTERVAL + (long) (random.nextDouble() * bound);
+    }
+
+    public void taskSolved() {
+        Task task = tryGetTask();
+        solveTask(task);
+    }
+
+    public void taskNotSolved(Task task) {
+        solveTask(task);
     }
 }
