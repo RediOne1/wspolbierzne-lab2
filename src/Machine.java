@@ -1,33 +1,52 @@
-/**
- * author:  Adrian
- * index:   204423
- * data:    2015-05-12
- */
-public abstract class Machine extends Thread{
-    public Task task = null;
-    public Employee employee1 = null, employee2 = null;
-    public boolean working = true;
+import java.util.Random;
 
-    public synchronized boolean tryBookPlace(Employee employee, Task task) {
-        if(!working)
-            return false;
+/**
+ * authot:  Adrian Kuta
+ * index:   204423
+ * date:    01.06.15
+ */
+public abstract class Machine {
+
+    public Employee employee1 = null, employee2 = null;
+    public boolean solvingInProgress;
+    private boolean destroyed = false;
+
+    public Machine tryBookMachine(Employee employee) {
+        if (destroyed)
+            return null;
         if (employee1 == null) {
-            this.task = task;
             employee1 = employee;
-            newEmployee();
-            return true;
+            if (Settings.TRYB == Settings.GADATLIWY)
+                System.out.println("Employee " + employee1 + " pressed first button");
+            return this;
         } else if (employee2 == null) {
             employee2 = employee;
-            newEmployee();
+            if (Settings.TRYB == Settings.GADATLIWY)
+                System.out.println("Employee " + employee2 + " pressed second button");
+            solvingInProgress = true;
+            ((CommunicationInterface) employee1).startSolvingTask();
+            return this;
+        } else
+            return null;
+    }
+
+    public boolean checkDestroy() {
+        Random random = new Random();
+        float randFloat = random.nextFloat();
+        if (randFloat < Settings.BREAK_PROBABILITY) {
+            if (Settings.TRYB == Settings.GADATLIWY)
+                System.out.println("Machine destroyed");
+            ((CommunicationInterface) employee2).machineDestroyed();
             return true;
         }
         return false;
     }
 
-    private void newEmployee(){
-        if(employee1 != null && employee2 != null)
-            startSolving();
-    }
+    public abstract Task solveTask(Task task);
 
-    public abstract void startSolving();
+    public interface CommunicationInterface {
+        void startSolvingTask();
+
+        void machineDestroyed();
+    }
 }

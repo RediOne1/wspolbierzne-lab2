@@ -11,12 +11,17 @@ import java.util.Scanner;
 public class Main {
 
     public static void main(String[] args) {
-        // write your code here
-        Chief chief = new Chief();
+        for (int i = 0; i < Settings.ADDING_MACHINES_COUNT; i++)
+            Settings.addingMachines.add(new AddingMachine());
+
+        for (int i = 0; i < Settings.MULTIPLYING_MACHINES_COUNT; i++)
+            Settings.multiplyingMachines.add(new MultiplyingMachine());
+        Chief chief = new Chief("Chief");
 
         List<Employee> employeeList = new ArrayList<>();
-        for (int i = 0; i < Utils.EMPLOYEE_NUMER; i++)
-            employeeList.add(new Employee());
+        employeeList.add(new Employee("Jan"));
+        employeeList.add(new Employee("Adam"));
+        employeeList.add(new Employee("Staś"));
 
         Customer customer = new Customer();
 
@@ -25,7 +30,7 @@ public class Main {
             e.start();
         customer.start();
 
-        if(Utils.TRYB == Utils.SPOKOJNY)
+        if (Settings.TRYB == Settings.SPOKOJNY)
             launchScanner();
     }
 
@@ -35,16 +40,16 @@ public class Main {
             String command = scanner.nextLine();
             switch (command){
                 case "task_count":
-                    System.out.println(Utils.taskList.size());
+                    System.out.println(Settings.taskList.size());
                     break;
                 case "solved_count":
-                    System.out.println(Utils.solvedTasks.size());
+                    System.out.println(Settings.solvedTasks.size());
                     break;
                 case "gadatliwy_on":
-                    Utils.TRYB = Utils.GADATLIWY;
+                    Settings.TRYB = Settings.GADATLIWY;
                     break;
                 case "gadatliwy_off":
-                    Utils.TRYB = Utils.SPOKOJNY;
+                    Settings.TRYB = Settings.SPOKOJNY;
                     break;
                 case "stop":
                     System.exit(0);

@@ -31,19 +31,19 @@ public class Customer extends Thread {
                 e.printStackTrace();
             }
             String solvedTask = tryGetSolvedTask();
-            if (solvedTask != null && Utils.TRYB == Utils.GADATLIWY)
+            if (solvedTask != null && Settings.TRYB == Settings.GADATLIWY)
                 System.out.println("Customer received task: " + solvedTask);
         }
     }
 
     private synchronized String tryGetSolvedTask() {
-        if (Utils.solvedTasks.size() != 0)
-            return Utils.solvedTasks.remove(0).toString();
+        if (Settings.solvedTasks.size() > 0)
+            return Settings.solvedTasks.remove(0).toString();
         return null;
     }
 
     private long getSleepTime() {
-        long bound = Utils.CUSTOMER_MAX_INTERVAL - Utils.CUSTOMER_MIN_INTERVAL;
-        return Utils.CUSTOMER_MIN_INTERVAL + (long) (random.nextDouble() * bound);
+        long bound = Settings.CUSTOMER_MAX_INTERVAL - Settings.CUSTOMER_MIN_INTERVAL;
+        return Settings.CUSTOMER_MIN_INTERVAL + (long) (random.nextDouble() * bound);
     }
 }

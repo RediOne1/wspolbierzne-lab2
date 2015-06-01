@@ -1,21 +1,27 @@
-import java.util.Random;
-
 /**
- * author:  Adrian
+ * authot:  Adrian Kuta
  * index:   204423
- * data:    2015-05-12
+ * date:    01.06.15
  */
-public class AddingMachine extends Machine{
+public class AddingMachine extends Machine implements Employee.CommunicationInterface {
+    @Override
+    public void onTaskSolved() {
+        if (Settings.TRYB == Settings.GADATLIWY) {
+            System.out.println("Employee " + employee1 + " leaved machine with solved task");
+            System.out.println("Employee " + employee2 + " pressed first button");
+        }
+        employee1 = employee2;
+        employee2 = null;
+        solvingInProgress = false;
+    }
 
     @Override
-    public void startSolving() {
-        try {
-            sleep(Utils.SOLVING_TIME);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        float randomFloat = new Random().nextFloat();
-        if(randomFloat < Utils.BREAK_PROBABILITY)
-            working = false;
+    public Task solveTask(Task task) {
+        if (checkDestroy())
+            return null;
+        task.result = "" + (task.arg1 + task.arg2);
+        if (Settings.TRYB == Settings.GADATLIWY)
+            System.out.println("AddingMachine solved task: " + task.arg1 + task.operator + task.arg2 + "=" + task.result);
+        return task;
     }
 }

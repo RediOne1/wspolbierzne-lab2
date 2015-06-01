@@ -33,20 +33,20 @@ public class Chief extends Thread {
             Task task = new Task();
             task.arg1 = random.nextInt(1024);
             task.arg2 = random.nextInt(1024);
-            int operator = random.nextInt(Utils.operators.length);
-            task.operator = Utils.operators[operator];
+            int operator = random.nextInt(Settings.operators.length);
+            task.operator = Settings.operators[operator];
             addTask(task);
         }
     }
 
     private synchronized void addTask(Task task) {
-        Utils.taskList.add(task);
-        if (Utils.TRYB == Utils.GADATLIWY)
+        Settings.taskList.add(task);
+        if (Settings.TRYB == Settings.GADATLIWY)
             System.out.println(name + " Add task: " + task.arg1 + task.operator + task.arg2);
     }
 
     private long getSleepTime() {
-        long bound = Utils.ADD_TASK_MAX_INTERVAL - Utils.ADD_TASK_MIN_INTERVAL;
-        return Utils.ADD_TASK_MIN_INTERVAL + (long) (random.nextDouble() * bound);
+        long bound = Settings.ADD_TASK_MAX_INTERVAL - Settings.ADD_TASK_MIN_INTERVAL;
+        return Settings.ADD_TASK_MIN_INTERVAL + (long) (random.nextDouble() * bound);
     }
 }
