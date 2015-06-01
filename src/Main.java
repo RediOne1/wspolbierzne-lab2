@@ -1,5 +1,3 @@
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Scanner;
 
 /**
@@ -18,15 +16,13 @@ public class Main {
             Settings.multiplyingMachines.add(new MultiplyingMachine());
         Chief chief = new Chief("Chief");
 
-        List<Employee> employeeList = new ArrayList<>();
-        employeeList.add(new Employee("Jan"));
-        employeeList.add(new Employee("Adam"));
-        employeeList.add(new Employee("Staś"));
+        Settings.employeeList.add(new Employee("Jan"));
+        Settings.employeeList.add(new Employee("Adam"));
 
         Customer customer = new Customer();
 
         chief.start();
-        for(Employee e : employeeList)
+        for (Employee e : Settings.employeeList)
             e.start();
         customer.start();
 

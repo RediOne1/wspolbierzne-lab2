@@ -1,4 +1,6 @@
 import java.util.Random;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * author:  Adrian Kuta
@@ -8,14 +10,16 @@ import java.util.Random;
  */
 public class Employee extends Thread implements Machine.CommunicationInterface {
 
+    public Machine machine;
     private Random random;
     private String name;
-    private Machine machine;
     private Task task = null;
+    private Timer timer = new Timer();
 
     public Employee() {
         name = "";
         random = new Random();
+
     }
 
     public Employee(String name) {
@@ -56,6 +60,15 @@ public class Employee extends Thread implements Machine.CommunicationInterface {
             goToAddingMachine();
         else
             goToMultiplyingMachine();
+        timer = new Timer();
+        TimerTask timerTask = new TimerTask() {
+            @Override
+            public void run() {
+                if (machine != null)
+                    callForHelp();
+            }
+        };
+        timer.schedule(timerTask, Settings.GET_TASK_MAX_INTERVAL);
     }
 
     private void goToMultiplyingMachine() {
@@ -63,7 +76,7 @@ public class Employee extends Thread implements Machine.CommunicationInterface {
             System.out.println("Employee " + name + " searching Multiplying Machine");
         while (machine == null)
             for (int i = 0; machine == null && i < Settings.MULTIPLYING_MACHINES_COUNT; i++) {
-                machine = Settings.multiplyingMachines.get(i).tryBookMachine(this);
+                Settings.multiplyingMachines.get(i).tryBookMachine(this);
             }
     }
 
@@ -72,7 +85,7 @@ public class Employee extends Thread implements Machine.CommunicationInterface {
             System.out.println("Employee " + name + " searching Adding Machine");
         while (machine == null)
             for (int i = 0; machine == null && i < Settings.ADDING_MACHINES_COUNT; i++) {
-                machine = Settings.addingMachines.get(i).tryBookMachine(this);
+                Settings.addingMachines.get(i).tryBookMachine(this);
             }
     }
 
@@ -86,7 +99,13 @@ public class Employee extends Thread implements Machine.CommunicationInterface {
     }
 
     @Override
+    public void onNeededTask() {
+        getTask();
+    }
+
+    @Override
     public void startSolvingTask() {
+        timer.cancel();
         if (Settings.TRYB == Settings.GADATLIWY)
             System.out.println("Employee " + name + " started solving task");
         try {
@@ -107,34 +126,55 @@ public class Employee extends Thread implements Machine.CommunicationInterface {
     }
 
     public boolean canHelp() {
-        if (machine == null)
-            return true;
-        else
-            return !machine.solvingInProgress;
+        return machine == null || !machine.solvingInProgress;
     }
 
     public void help(Machine machine) {
-
+        timer.cancel();
+        timer.purge();
+        if (Settings.TRYB == Settings.GADATLIWY)
+            System.out.println("Employee " + name + " will help");
+        leaveTask();
+        machine.tryBookMachine(this);
+        if (machine == null)
+            getTask();
     }
 
     private void callForHelp() {
+        if (Settings.TRYB == Settings.GADATLIWY)
+            System.out.println("Employee " + name + " is calling for help");
+        for (Employee employee : Settings.employeeList) {
+            if (employee == this)
+                continue;
+            if (employee.canHelp()) {
+                employee.help(machine);
+                return;
+            }
+        }
     }
 
     @Override
     public void machineDestroyed() {
         if (Settings.TRYB == Settings.GADATLIWY)
-            System.out.println("Employee " + name + "leaved broken machine");
+            System.out.println("Employee " + name + " leaved broken machine");
         leaveTask();
         getTask();
     }
 
     private synchronized void leaveTask() {
+        if (Settings.TRYB == Settings.GADATLIWY)
+            System.out.println("Employee " + name + " leaved task");
         Settings.taskList.add(task);
+        task = null;
     }
 
     @Override
     public String toString() {
         return name != null ? name : "";
+    }
+
+    public boolean hasTask() {
+        return task != null;
     }
 
     public interface CommunicationInterface {
