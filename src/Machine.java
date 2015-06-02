@@ -10,6 +10,7 @@ public abstract class Machine {
     public Employee employee1 = null, employee2 = null;
     public boolean solvingInProgress;
     private boolean destroyed = false;
+    private String name = "";
 
     public synchronized void tryBookMachine(Employee employee) {
         if (destroyed)
@@ -37,12 +38,22 @@ public abstract class Machine {
                 System.out.println("Machine destroyed");
             destroyed = true;
             ((CommunicationInterface) employee2).machineDestroyed();
+            Engineer.fixMachine(this);
             return true;
         }
         return false;
     }
 
     public abstract Task solveTask(Task task);
+
+    public void fix() {
+        destroyed = false;
+    }
+
+    @Override
+    public String toString() {
+        return name;
+    }
 
     public interface CommunicationInterface {
         void onNeededTask();

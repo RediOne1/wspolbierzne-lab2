@@ -11,9 +11,11 @@ public class Settings {
 
     public static final int GADATLIWY = 1;
     public static final int SPOKOJNY = 2;
+    //Engineer settings
+    public static final long MACHINE_REPAIRING_TIME = 5000;
     //Machine settings
     public static final long SOLVING_TIME = 1000;
-    public static final float BREAK_PROBABILITY = 0.5f;
+    public static final float BREAK_PROBABILITY = 1f;
     public static final int ADDING_MACHINES_COUNT = 2;
     public static final int MULTIPLYING_MACHINES_COUNT = 2;
     //Chief settings
