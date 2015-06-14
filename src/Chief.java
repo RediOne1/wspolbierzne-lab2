@@ -40,9 +40,13 @@ public class Chief extends Thread {
     }
 
     private synchronized void addTask(Task task) {
-        Settings.taskList.add(task);
-        if (Settings.TRYB == Settings.GADATLIWY)
-            System.out.println(name + " Add task: " + task.arg1 + task.operator + task.arg2);
+        try {
+            Settings.taskList.add(task);
+            if (Settings.TRYB == Settings.GADATLIWY)
+                System.out.println(name + " Add task: " + task.arg1 + task.operator + task.arg2);
+        } catch (Exception ignored) {
+
+        }
     }
 
     private long getSleepTime() {

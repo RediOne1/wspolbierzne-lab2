@@ -16,8 +16,9 @@ public class Main {
             Settings.multiplyingMachines.add(new MultiplyingMachine());
         Chief chief = new Chief("Chief");
 
-        Settings.employeeList.add(new Employee("Jan"));
-        Settings.employeeList.add(new Employee("Adam"));
+        for (int i = 0; i < Settings.EMPLOYEE_NUMER; i++) {
+            Settings.employeeList.add(new Employee("Employee " + i));
+        }
 
         Customer customer = new Customer();
 

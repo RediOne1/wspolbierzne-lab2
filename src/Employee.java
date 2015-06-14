@@ -50,8 +50,11 @@ public class Employee extends Thread implements Machine.CommunicationInterface {
     }
 
     private synchronized Task tryGetTask() {
-        if (Settings.taskList.size() != 0)
-            return Settings.taskList.remove(0);
+        try {
+            if (Settings.taskList.size() > 0)
+                return Settings.taskList.remove(0);
+        } catch (Exception ignored) {
+        }
         return null;
     }
 

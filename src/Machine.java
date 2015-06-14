@@ -27,7 +27,8 @@ public abstract class Machine {
             solvingInProgress = true;
             employee2.machine = this;
             ((CommunicationInterface) employee1).startSolvingTask();
-        }
+        } else
+            employee.machine = null;
     }
 
     public synchronized boolean checkDestroy() {
